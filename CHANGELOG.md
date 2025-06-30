@@ -1,3 +1,7 @@
+## 1.3.0
+
+* Created a typedef for the onData callback to make it easier to use. It already expects the correct parameters.
+
 ## 1.2.0
 
 * Replaced the Flutter dependency with a meta dependency. The declaration of the annotations is in that package.

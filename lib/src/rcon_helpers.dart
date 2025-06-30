@@ -4,6 +4,11 @@ import 'package:meta/meta.dart';
 
 import 'rcon_vars.dart';
 
+typedef OnDataCallback = void Function(
+  List<int> headers,
+  String payload,
+);
+
 /// Returns a Uint8Lit that contains only 4 integers starting
 /// from original[start]. Start defaults to 0 if not set. If
 /// 4 integers cannot be copied from the list (e.g. list length
@@ -139,7 +144,7 @@ bool _processResponseID(int respID) {
 
 /// Processes the server response (represented as a Uint8List)
 /// and calls onData handler if we have received a good packet.
-void _processServerResponse(Uint8List data, Function onData) {
+void _processServerResponse(Uint8List data, OnDataCallback onData) {
   // Parses out the message headers and payload.
   List<int> rconHeaders = _processHeaders(data);
   String payload = String.fromCharCodes(data, 12);
@@ -164,14 +169,14 @@ void _processServerResponse(Uint8List data, Function onData) {
 /// Processes the server response (represented as a Uint8List)
 /// and calls onData handler if we have received a good packet.
 @visibleForTesting
-void processServerResponse(Uint8List data, Function onData) {
+void processServerResponse(Uint8List data, OnDataCallback onData) {
   return _processServerResponse(data, onData);
 }
 
 /// Processes the server response (represented as a Uint8List)
 /// and calls onData handler if we have received a good packet.
 @protected
-void pSR(Uint8List data, Function onData) {
+void pSR(Uint8List data, OnDataCallback onData) {
   return _processServerResponse(data, onData);
 }
 

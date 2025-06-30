@@ -69,7 +69,7 @@ bool sendCommand(String command) {
 /// server. Returns a boolean that specifies if the socket has
 /// started listening. Note: onData must accept a List<int> and
 /// a String as the only parameters.
-bool listen(Function onData) {
+bool listen(OnDataCallback onData) {
   // Checks to ensure that the RCON socket exists.
   if (rconSck == null) {
     return false;
