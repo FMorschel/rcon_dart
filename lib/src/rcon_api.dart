@@ -1,8 +1,14 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'rcon_vars.dart';
 import 'rcon_helpers.dart';
+
+typedef OnDataListenCallback = bool? Function(
+  List<int> headers,
+  String payload,
+);
 
 /// Creates and stores a socket connected to the RCON server
 /// with the given host (IP/FQDN) and port. Port defaults to
@@ -67,9 +73,21 @@ bool sendCommand(String command) {
 
 /// Starts listening on the socket for packets sent by the RCON
 /// server. Returns a boolean that specifies if the socket has
-/// started listening. Note: onData must accept a List<int> and
-/// a String as the only parameters.
+/// started listening.
 bool listen(OnDataCallback onData) {
+  return listenCancelable((headers, payload) {
+    onData(headers, payload);
+    return false; // Do not cancel the subscription.
+  });
+}
+
+/// Starts listening on the socket for packets sent by the RCON
+/// server. Returns a boolean that specifies if the socket has
+/// started listening.
+///
+/// The bool result expected from [onData] is used to close the subscription
+/// to the sream if it returns `true`.
+bool listenCancelable(OnDataListenCallback onData) {
   // Checks to ensure that the RCON socket exists.
   if (rconSck == null) {
     return false;
@@ -79,9 +97,12 @@ bool listen(OnDataCallback onData) {
   // Calls the first handler if we receive data, calls onError
   // if there is an error on the stream, calls onDone when the
   // client or the server ends the connection.
-  rconSck!.listen(
+  late StreamSubscription<Uint8List> subscription;
+  subscription = rconSck!.listen(
     (Uint8List data) {
-      pSR(data, onData);
+      pSR(data, (headers, payload) {
+        if (onData(headers, payload) ?? false) subscription.cancel();
+      });
     },
     onError: (error) {
       print('mc_rcon: Error with the connection to the server: $error');
