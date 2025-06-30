@@ -1,6 +1,7 @@
 ## 1.3.0
 
 * Created a typedef for the onData callback to make it easier to use. It already expects the correct parameters.
+* Added a new function `listenCancelable` that allows you to cancel the subscription to the stream if you want to. This is useful if you only want to listen for a specific ammount of packets and then stop listening.
 
 ## 1.2.0
 
