@@ -1,5 +1,6 @@
 import 'dart:typed_data';
-import 'package:flutter/foundation.dart';
+
+import 'package:meta/meta.dart';
 
 import 'rcon_vars.dart';
 

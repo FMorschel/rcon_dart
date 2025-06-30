@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:mc_rcon_dart/mc_rcon_dart.dart';
 
 main() async {
