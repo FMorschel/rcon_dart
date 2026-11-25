@@ -26,3 +26,11 @@
 * Modified the README usage section.
 * Added Flutter dependency (required for function annotations).
 * Added unit tests. THESE ARE NOT DONE. I AM NOT GOING TO WRITE MORE. AT LEAST NOT RIGHT NOW. I DO NOT HAVE THE WILLPOWER TO DO THIS ANY LONGER. Please send help.
+## 2.0.0
+* Breaking: replaced the global-socket functions with `RconClient`, which
+  returns each command's reply as a `Future<String>`.
+* Replies are matched to their requests by ID, so commands can overlap.
+* Connection loss and timeouts throw `RconException`.
+* Removed the Flutter dependency and the packet debug printing, which
+  included the password on login.
+* Requires Dart 3.9 or newer.

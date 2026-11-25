@@ -1,5 +1,3 @@
-library mc_rcon;
+library mc_rcon_dart;
 
-export 'src/rcon_vars.dart';
-export 'src/rcon_api.dart';
-export 'src/rcon_helpers.dart';
+export 'src/rcon_client.dart';

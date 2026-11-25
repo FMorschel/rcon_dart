@@ -1,56 +1,46 @@
-A Dart SDK for interacting with a Minecraft server using the RCON protocol.
-[Package on pub.dev](https://pub.dev/packages/mc_rcon_dart)
+# mc_rcon_dart
 
-## Features
-
-Provides an API to connect to, log in to, send commands to, and receive data from a Minecraft server via the RCON protocol.
+A Dart client for the Minecraft RCON protocol.
 
 ## Getting started
 
-Run `flutter pub add mc_rcon_dart` or `dart pub add mc_rcon_dart`.
+Add it from Git until it is published:
 
-Alternatively, add the following to your pubspec.yaml:
-```
+```yaml
 dependencies:
-  mc_rcon_dart: ^1.1.0
+  mc_rcon_dart:
+    git:
+      url: https://github.com/FMorschel/rcon_dart.git
 ```
 
 ## Usage
-Full code example in [example.dart](example/example.dart).
 
-To import the package:
 ```dart
 import 'package:mc_rcon_dart/mc_rcon_dart.dart';
+
+Future<void> main() async {
+  var rcon = await RconClient.connect('192.168.1.20', port: 25575);
+  try {
+    await rcon.login('password');
+    print(await rcon.send('list'));
+  } finally {
+    await rcon.close();
+  }
+}
 ```
 
-To create the socket (typically want to await on the completion):
-```dart
-createSocket("172.30.80.31", port: 25575);
-```
+* `RconClient.connect` opens the socket, with a `timeout` for the connection.
+* `login` throws `RconException` when the password is rejected.
+* `send` returns the server's reply, matched to its own request, and throws
+  `RconException` if the connection is lost or the reply takes longer than its
+  `timeout` (5 seconds by default).
+* Several `send` calls may be in flight at once.
+* `close` ends the connection and fails any command still waiting.
 
-To set a listener on the socket (note that the handler function must take a List<int> and a String as its only two parameters):
-```dart
-listen(onData);
-```
-
-To log in to the RCON server:
-```dart
-login("123");
-```
-
-To send any command:
-```dart
-sendCommand("time set 0");
-```
-
-To close the connection:
-```dart
-close();
-```
+Errors never include the password.
 
 ## Additional information
 
-* The RCON documentation is [here](https://wiki.vg/RCON).
-* The documentation for Minecraft console commands is [here](https://minecraft.fandom.com/wiki/Commands).
-* The documentation for Socket (as of Dart 2.18.1), which is used to communicate with the RCON server, is [here](https://api.dart.dev/stable/2.18.1/dart-io/Socket-class.html).
-* Report bugs by making a new issue or send a merge request with the fix, but I'm pretty sure this is all working as is, and I don't expect the RCON protocol to change.
+* The RCON protocol is described at [wiki.vg/RCON](https://wiki.vg/RCON).
+* Minecraft console commands are described at
+  [the Minecraft wiki](https://minecraft.fandom.com/wiki/Commands).
